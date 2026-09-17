@@ -254,11 +254,51 @@ const App = (() => {
   let active = null;
   let orgChart = null; // data/org-chart.json — real UKG people (daily pull); null when absent
 
+  // Encrypted org data (published deploys): AES-256-GCM blob, PBKDF2-derived key.
+  async function decryptOrgBlob(pass, blob){
+    const dec = b => Uint8Array.from(atob(b), c => c.charCodeAt(0));
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: dec(blob.salt), iterations: blob.iter, hash: 'SHA-256' }, km, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: dec(blob.iv) }, key, dec(blob.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+  function unlockPrompt(blob){
+    return new Promise(resolve => {
+      const m = UI.modal('Earthbar Ops', `
+        <p class="micro" style="margin-bottom:10px">This preview includes live org data. Enter the access password, or continue with sample data.</p>
+        <div class="field"><label for="unlock-pw">Password</label><input type="password" id="unlock-pw" autocomplete="current-password"></div>
+        <div class="micro" id="unlock-err" style="display:none;color:var(--bad)">That password didn’t work — try again.</div>
+      `, [
+        { label: 'Use sample data', cls: 'ghost', onClick: close => { close(); resolve(null); } },
+        { label: 'Unlock', onClick: async close => {
+            const pw = m.body.querySelector('#unlock-pw').value;
+            try {
+              const data = await decryptOrgBlob(pw, blob);
+              try { sessionStorage.setItem('eb_ops_unlock', pw); } catch(_){}
+              close(); resolve(data);
+            } catch(_) { m.body.querySelector('#unlock-err').style.display = ''; }
+          } },
+      ]);
+      const inp = m.body.querySelector('#unlock-pw');
+      inp.focus();
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { const btns = m.body.parentElement.querySelectorAll('.modal-actions button'); btns[btns.length - 1].click(); }
+      });
+    });
+  }
   async function loadOrgChart(){
     try {
       const res = await fetch('data/org-chart.json', { cache: 'no-store' });
-      if (res.ok) orgChart = await res.json();
-    } catch(_){ /* file:// or missing file — picker falls back to demo personas */ }
+      if (res.ok) { orgChart = await res.json(); return; }
+    } catch(_){ /* file:// or missing file — fall through */ }
+    try {
+      const res = await fetch('data/org-chart.enc.json', { cache: 'no-store' });
+      if (!res.ok || !window.crypto || !crypto.subtle) return; // no encrypted payload (or insecure context) — demo fallback
+      const blob = await res.json();
+      let pw = null; try { pw = sessionStorage.getItem('eb_ops_unlock'); } catch(_){}
+      if (pw) { try { orgChart = await decryptOrgBlob(pw, blob); return; } catch(_){ /* stale pw — re-prompt */ } }
+      orgChart = await unlockPrompt(blob);
+    } catch(_){ /* any failure — picker falls back to demo personas */ }
   }
   function orgPeople(){ return (orgChart && orgChart.people) || []; }
   // A picker selection from the org chart becomes a persona object (id 'org:<personNumber>').
