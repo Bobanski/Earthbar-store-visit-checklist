@@ -1,0 +1,4 @@
+# Generated from the daily UKG org-chart pull — contains real employee names/ids.
+# NEVER commit: this repo's main deploys to public GitHub Pages. Rebuild locally with:
+#   python tools/build_org_chart.py
+data/org-chart.json

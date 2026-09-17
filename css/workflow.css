@@ -1,0 +1,80 @@
+/* workflow.css — Issues + Actions views. Studio direction: white rounded cards,
+   segmented view switch, semantic tints. --danger/--bad reserved for
+   overdue/high-severity only. No emojis. */
+
+/* ---------------- Issues ---------------- */
+.issues-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.issue-filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-select{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:var(--radius);padding:6px 8px;background:var(--surface);color:var(--ink)}
+
+.issue-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.issue-card-top{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.issue-age{margin-left:auto;white-space:nowrap}
+.issue-card-body p{font-size:13px;margin:6px 0}
+.issue-thumb{max-width:140px;display:block;border:1px solid var(--line);border-radius:var(--radius);margin-top:6px}
+.action-chip{cursor:pointer;appearance:none;font:inherit}
+.issue-card-actions{margin-top:8px}
+
+/* ---------------- Actions toolbar + view switch ---------------- */
+.actions-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.view-switch{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--r-sm);padding:3px;gap:2px;background:var(--surface)}
+.view-switch button{appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:600;padding:6px 12px;cursor:pointer;border-radius:6px}
+.view-switch button.active{background:var(--green);color:#fff}
+
+/* ---------------- Board ---------------- */
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:719px){
+  .board{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:10px;padding-bottom:6px;scroll-snap-type:x proximity}
+  .board-col{flex:0 0 82%;scroll-snap-align:start}
+}
+.board-col{background:var(--wash);border:1px solid var(--line);border-radius:var(--r-lg);padding:10px;min-width:0}
+.board-col h3{display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:12px}
+.board-col-body{display:flex;flex-direction:column;gap:8px;min-height:40px}
+.board-col-body.dragover{outline:2px dashed var(--ink);outline-offset:2px}
+.board-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:11px;cursor:pointer;box-shadow:0 1px 2px rgba(23,32,26,.06)}
+.board-card:hover{border-color:var(--line-2)}
+.board-card-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.board-card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:6px;gap:6px;flex-wrap:wrap}
+.board-card .move-btn{margin-top:8px;width:100%}
+.due-danger{color:var(--danger);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------------- List (table.data from app.css handles the base) ---------------- */
+table.data td.due-danger{color:var(--danger)}
+
+/* ---------------- Calendar ---------------- */
+.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.cal-dow{background:var(--wash);text-align:center;padding:6px 2px}
+.cal-cell{background:var(--surface);min-height:64px;padding:4px;display:flex;flex-direction:column;gap:3px}
+.cal-empty{background:var(--wash)}
+.cal-daynum{margin-bottom:2px}
+.cal-chip{display:block;width:100%;text-align:left;font-size:10px;background:var(--wash2);border:1px solid var(--line);border-radius:var(--radius);padding:2px 4px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-chip-danger{border-color:var(--danger);color:var(--danger)}
+.cal-chip-done{background:var(--surface);border-color:var(--ink);color:var(--ink);cursor:default}
+.cal-chip-due{background:var(--ink);border-color:var(--ink);color:#fff;cursor:default}
+.cal-today{outline:2px solid var(--ink);outline-offset:-2px}
+
+/* color-coded compliance squares (calendar) */
+.csq{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:1.5px solid;border-radius:4px;font-size:10px;font-weight:800;line-height:1}
+.csq-row{display:flex;flex-wrap:wrap;gap:3px}
+.cal-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;align-items:center}
+.cal-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)}
+.cal-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.cal-toolbar .picker-search{flex:0 1 260px;min-height:36px;padding:6px 10px}
+@media(max-width:719px){
+  .calendar-grid{overflow-x:auto}
+  .cal-cell{min-height:48px}
+}
+
+/* ops-dashboard-style dropdown (details/summary + panel) — calendar view switcher */
+.dd{position:relative}
+.dd>summary{list-style:none;cursor:pointer;border:1px solid var(--line-2);border-radius:var(--r-sm);padding:10px 14px;font-size:14px;font-weight:650;background:var(--surface);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dd>summary::-webkit-details-marker{display:none}
+.dd>summary::after{content:' ▾';color:var(--muted)}
+.dd-panel{position:absolute;left:0;top:calc(100% + 8px);width:min(340px,88vw);background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:12px;box-shadow:0 12px 32px rgba(23,32,26,.13);z-index:30}
+.dd-panel .picker-search{width:100%}
+.dd-options{max-height:340px;overflow:auto;margin-top:8px}
+.dd-options button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;background:none;border:0;min-height:44px;padding:10px;font:inherit;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;border-radius:var(--r-sm)}
+.dd-options button:hover{background:var(--wash)}
+.dd-options button[aria-current=true]{background:var(--lime)}
+.dd-options small{font-size:11px;font-weight:500;color:var(--muted)}

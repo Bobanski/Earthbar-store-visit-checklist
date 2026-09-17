@@ -1,0 +1,46 @@
+/* admin.css — Admin view: template builder, routing rules, data controls.
+   Studio direction tokens. Template builder is desktop-optimized but must not
+   break at 375px. No emojis. */
+
+.admin-section{margin-bottom:16px}
+.admin-section:last-child{margin-bottom:0}
+
+/* ---- toggle switch (checkbox styled as a compact pill) ---- */
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
+.toggle input{appearance:none;width:30px;height:16px;border:1px solid var(--line);border-radius:8px;background:var(--wash);position:relative;cursor:pointer;flex:0 0 auto}
+.toggle input::after{content:"";position:absolute;top:1px;left:1px;width:12px;height:12px;border-radius:50%;background:var(--muted);transition:transform .12s,background .12s}
+.toggle input:checked{border-color:var(--green);background:var(--green)}
+.toggle input:checked::after{background:#fff;transform:translateX(14px)}
+.toggle span{text-transform:uppercase;letter-spacing:.05em;font-size:10px}
+.toggle.small{font-size:11px}
+
+/* ---- template list ---- */
+.tpl-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.tpl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border:1px solid var(--line);border-radius:var(--radius);padding:10px}
+.tpl-row-name{font-size:14px;font-weight:600}
+.tpl-row-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ---- template editor: sections + items (inside modal body) ---- */
+#tf-sections{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.sec-card{border:1px solid var(--line);border-radius:var(--radius);padding:10px;background:var(--wash)}
+.sec-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.sec-title{flex:1 1 160px;font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);border-radius:var(--radius);padding:6px 8px;background:var(--surface);color:var(--ink)}
+.sec-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+.item-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.item-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:6px 8px}
+.item-row .it-text{flex:1 1 140px;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:var(--radius);padding:6px 8px;background:var(--surface);color:var(--ink)}
+.item-row .it-type{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:var(--radius);padding:5px 6px;background:var(--surface);color:var(--ink)}
+.item-row button.small{padding:5px 8px}
+
+/* ---- routing rules table ---- */
+#routing-table select,#routing-table input[type=text],#routing-table input[type=number]{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:var(--radius);padding:5px 6px;background:var(--surface);color:var(--ink);width:100%}
+#routing-table td{vertical-align:middle}
+
+@media(max-width:719px){
+  .tpl-row{flex-direction:column;align-items:flex-start}
+  .sec-head{flex-direction:column;align-items:stretch}
+  .sec-controls{justify-content:space-between}
+  .item-row{flex-direction:column;align-items:stretch}
+  .item-row .it-type{width:100%}
+}
